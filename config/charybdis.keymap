@@ -5,69 +5,137 @@
 #include <dt-bindings/zmk/pointing.h>
 
 &lt {
-    tapping-term-ms = <200>;
-    flavor = "balanced";
+    tapping-term-ms = <180>;
+    flavor = "tap-preferred";
     quick-tap-ms = <150>;
 };
 
 / {
     combos { compatible = "zmk,combos"; };
 
+    behaviors {
+        game_dance_on: game_dance_on {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <250>;
+            bindings = <&kp SEMI>, <&tog_game_on>;
+        };
+
+        game_dance_off: game_dance_off {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <180>;
+            bindings = <&kp SLASH>, <&tog_game_off>;
+        };
+
+        caps_dance: caps_dance {
+            compatible = "zmk,behavior-tap-dance";
+            label = "CAPS_DANCE";
+            #binding-cells = <0>;
+            bindings = <&kp LEFT_SHIFT>, <&kp CAPSLOCK>;
+        };
+
+        brackets: brackets {
+            compatible = "zmk,behavior-tap-dance";
+            label = "BRACKETS";
+            #binding-cells = <0>;
+            bindings = <&kp LEFT_BRACKET>, <&kp RIGHT_BRACKET>;
+        };
+    };
+
+    macros {
+        tog_game_on: tog_game_on {
+            compatible = "zmk,behavior-macro";
+            label = "tog_game_on";
+            #binding-cells = <0>;
+            bindings = <&rgb_ug RGB_COLOR_HSB(0,100,50) &to 6>; // &amc AM_OFF 
+        };
+
+        tog_game_off: tog_game_off {
+            compatible = "zmk,behavior-macro";
+            label = "tog_game_off";
+            #binding-cells = <0>;
+            bindings = <&rgb_ug RGB_EFR &to 0>; // &amc AM_ON 
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
-        Base {
+        qwerty {
             bindings = <
-&kp GRAVE       &kp N1   &kp N2  &kp N3        &kp N4        &kp N5          &kp N6       &kp N7         &kp N8     &kp N9   &kp N0       &kp BACKSLASH
-&kp TAB         &kp Q    &kp W   &kp E         &kp R         &kp T           &kp Y        &kp U          &kp I      &kp O    &kp P        &kp BACKSPACE
-&kp LEFT_SHIFT  &kp A    &kp S   &kp D         &kp F         &kp G           &kp H        &kp J          &kp K      &kp L    &kp SEMI     &kp APOS
-&kp LCTRL       &lt 3 Z  &kp X   &kp C         &kp V         &kp B           &kp N        &kp M          &kp COMMA  &kp DOT  &lt 3 SLASH  &kp ESCAPE
-                                 &kp LEFT_WIN  &kp SPACE     &lt 1 ENTER     &lt 2 ENTER  &kp RIGHT_ALT
-                                               &kp LEFT_ALT  &kp CAPSLOCK    &kp DELETE
+&mt GRAVE ESCAPE  &kp N1          &kp N2          &kp N3              &kp N4            &kp N5       &kp N6           &kp N7             &kp N8               &kp N9           &kp N0                   &kp BACKSPACE
+&kp TAB           &kp Q           &kp W           &kp E               &kp R             &kp T        &kp Y            &kp U              &kp I                &kp O            &kp P                    &brackets
+&td_shifr_caps    &mt LEFT_WIN A  &mt LEFT_ALT S  &mt LEFT_CONTROL D  &mt LEFT_SHIFT F  &kp G        &kp H            &mt RIGHT_SHIFT J  &mt RIGHT_CONTROL K  &mt RIGHT_ALT L  &mt RIGHT_WIN SEMICOLON  &kp APOS
+&kp LEFT_CONTROL  &kp Z           &kp X           &kp C               &kp V             &kp B        &kp N            &kp M              &kp COMMA            &kp DOT          &kp FSLH                 &kp BACKSLASH
+                                                  &mkp LCLK           &mkp MCLK         &mkp RCLK    &mt EQUAL MINUS  &kp SPACE
+                                                                      &kp SPACE         &mo 1        &kp ENTER
             >;
         };
 
-        Lower {
+        Functional {
             bindings = <
-&kp TILDE  &kp EXCLAMATION  &kp HASH      &kp DOLLAR    &kp DOLLAR    &kp PERCENT    &kp CARET      &kp AMPERSAND  &kp ASTERISK  &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &kp PIPE
-&kp GRAVE  &kp NUMBER_1     &kp NUMBER_2  &kp NUMBER_3  &kp NUMBER_4  &kp LBKT       &kp RBKT       &kp F1         &kp F2        &kp F3                &kp F4                 &kp BACKSPACE
-&kp LSHFT  &kp NUMBER_5     &kp NUMBER_6  &kp NUMBER_7  &kp NUMBER_8  &none          &kp BACKSLASH  &kp F5         &kp F6        &kp F7                &kp F8                 &kp PAGE_UP
-&kp LCTRL  &kp NUMBER_9     &kp NUMBER_0  &kp MINUS     &kp EQUAL     &none          &none          &kp F9         &kp F10       &kp F11               &kp F12                &kp PAGE_DOWN
-                                          &kp LEFT_WIN  &kp SPACE     &trans         &kp ENTER      &kp RIGHT_ALT
-                                                        &none         &none          &none
+&kp F1  &kp F2        &kp F3        &kp F4        &kp F5        &kp F6          &kp F7      &kp F8          &kp F9          &kp F10          &kp F11     &kp F12
+&trans  &none         &none         &none         &none         &none           &none       &kp HOME        &kp UP_ARROW    &kp PAGE_UP      &none       &kp C_VOLUME_UP
+&trans  &to 2         &to 3         &to 4         &to 5         &to 6           &none       &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp INSERT  &kp C_VOLUME_DOWN
+&trans  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4    &bt BT_CLR  &kp END         &kp RIGHT_ALT   &kp PAGE_DOWN    &kp DELETE  &none
+                                    &trans        &trans        &trans          &trans      &trans
+                                                  &trans        &trans          &trans
             >;
         };
 
-        Raise {
+        Symbols {
             bindings = <
-&kp F12        &kp F1      &kp F2      &kp F3         &kp F4         &kp F5          &kp F6             &kp F7         &kp F8    &kp F9     &kp F10  &kp F11
-&kp LS(GRAVE)  &kp LS(N1)  &kp LS(N2)  &kp LS(N3)     &kp LS(N4)     &kp LS(LBKT)    &kp LS(RBKT)       &none          &none     &none      &none    &none
-&kp LSHFT      &kp LS(N5)  &kp LS(N6)  &kp LS(N7)     &kp LS(N8)     &none           &kp LS(BACKSLASH)  &none          &kp UP    &none      &none    &none
-&kp LCTRL      &kp LS(N9)  &kp LS(N0)  &kp LS(MINUS)  &kp LS(EQUAL)  &none           &none              &kp LEFT       &kp DOWN  &kp RIGHT  &none    &none
-                                       &kp LEFT_WIN   &kp SPACE      &kp ENTER       &trans             &kp RIGHT_ALT
-                                                      &none          &none           &none
+&trans  &kp EXCLAMATION  &kp AT_SIGN    &kp HASH      &kp DOLLAR            &kp PERCENT              &kp HOME       &kp GRAVE          &kp TILDE          &kp RIGHT_WIN  &kp RIGHT_ALT  &kp BACKSPACE
+&trans  &kp CARET        &kp AMPERSAND  &kp ASTERISK  &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS    &kp END        &kp LEFT_BRACKET   &kp RIGHT_BRACKET  &kp SEMICOLON  &kp COLON      &kp SQT
+&trans  &kp MINUS        &kp EQUAL      &kp PLUS      &kp LESS_THAN         &kp GREATER_THAN         &kp PAGE_UP    &kp DOUBLE_QUOTES  &kp COMMA          &kp PERIOD     &kp QMARK      &kp BACKSLASH
+&trans  &kp UNDERSCORE   &kp PIPE       &kp SLASH     &kp LEFT_BRACE        &kp RIGHT_BRACE          &kp PAGE_DOWN  &kp ESCAPE         &kp ENTER          &kp SPACE      &kp DELETE     &kp INSERT
+                                        &trans        &trans                &trans                   &trans         &trans
+                                                      &trans                &to 0                    &trans
             >;
         };
 
-        Mouse {
+        Gaming {
             bindings = <
-&none        &none         &none         &none         &none      &none         &none           &none      &none         &none         &none         &none
-&none        &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &none      &bt BT_CLR    &bt BT_CLR      &none      &bt BT_SEL 2  &bt BT_SEL 1  &bt BT_SEL 0  &none
-&none        &none         &none         &mkp MCLK     &none      &none         &none           &none      &mkp MCLK     &none         &none         &none
-&bootloader  &none         &mkp RCLK     &mo 4         &mkp LCLK  &none         &studio_unlock  &mkp LCLK  &mo 4         &mkp RCLK     &none         &bootloader
-                                         &none         &mkp LCLK  &mkp RCLK     &mkp RCLK       &mkp LCLK
-                                                       &none      &none         &none
+&kp ESC       &kp GRAVE         &kp N1  &kp N2     &kp N3     &kp N4       &kp N5        &kp NUMBER_6  &kp N7  &kp N8     &kp N9      &kp N0
+&kp MINUS     &kp TAB           &kp Q   &kp W      &kp E      &kp R        &kp T         &kp Y         &kp U   &kp I      &kp O       &kp P
+&kp EQUAL     &caps_dance       &kp A   &kp S      &kp D      &kp F        &kp G         &kp H         &kp J   &kp K      &kp L       &kp SEMICOLON
+&kp LEFT_WIN  &kp LEFT_CONTROL  &kp Z   &kp X      &kp C      &kp V        &kp B         &kp N         &kp M   &kp COMMA  &kp PERIOD  &game_dance_off
+                                        &mkp LCLK  &mkp MCLK  &mkp RCLK    &kp LEFT_ALT  &kp SPACE
+                                                   &mkp MB4   &mkp MB5     &kp ENTER
             >;
         };
 
-        Scroll {
+        Sniper {
+            bindings = <
+&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans  &trans  &trans  &trans  &trans
+                        &trans  &trans  &trans    &trans  &trans
+                                &trans  &to 0     &trans
+            >;
+        };
+
+        layer_5 {
             bindings = <
 &none        &none         &none         &none         &none      &none         &none       &none      &none         &none         &none         &none
-&none        &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &none      &bt BT_CLR    &bt BT_CLR  &none      &bt BT_SEL 2  &bt BT_SEL 1  &bt BT_SEL 0  &none
-&none        &none         &none         &mkp MCLK     &none      &none         &none       &none      &mkp MCLK     &none         &none         &none
-&bootloader  &none         &mkp RCLK     &none         &mkp LCLK  &none         &none       &mkp LCLK  &none         &mkp RCLK     &none         &bootloader
-                                         &none         &mkp LCLK  &mkp RCLK     &mkp RCLK   &mkp LCLK
-                                                       &none      &none         &none
+&none        &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 3  &none      &bt BT_CLR    &bt BT_CLR  &none      &bt BT_SEL 2  &bt BT_SEL 1  &bt BT_SEL 0  &none
+&none        &trans        &trans        &mkp MCLK     &trans     &none         &none       &trans     &mkp MCLK     &trans        &trans        &none
+&bootloader  &trans        &mkp RCLK     &mo 4         &mkp LCLK  &mo 5         &mo 5       &mkp LCLK  &mo 4         &mkp RCLK     &trans        &bootloader
+                                         &mo 5         &mkp LCLK  &mkp RCLK     &mkp RCLK   &mkp LCLK
+                                                       &none      &to 0         &trans
+            >;
+        };
+
+        layer_6 {
+            bindings = <
+&trans  &trans  &trans     &trans     &trans     &trans       &trans     &trans     &trans     &trans     &trans  &trans
+&trans  &trans  &trans     &trans     &trans     &trans       &trans     &trans     &trans     &trans     &trans  &trans
+&trans  &trans  &trans     &mkp MCLK  &trans     &trans       &trans     &trans     &mkp MCLK  &trans     &trans  &trans
+&trans  &trans  &mkp RCLK  &trans     &mkp LCLK  &trans       &trans     &mkp LCLK  &trans     &mkp RCLK  &trans  &trans
+                           &trans     &mkp LCLK  &mkp RCLK    &mkp RCLK  &mkp LCLK
+                                      &trans     &to 0        &trans
             >;
         };
     };
